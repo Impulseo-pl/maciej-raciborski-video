@@ -1,0 +1,540 @@
+/* Maciej Raciborski — demo Impulseo. Czysty kod, bez WordPressa. */
+
+:root{
+  --tlo:#0b0b0c;
+  --tlo-2:#121214;
+  --tekst:#f2f0ee;
+  --tekst-cichy:#b8b5b2;
+  --linia:#2a2a2e;
+  --akcent:#c8452f;
+  --img-dur:1.4s;
+  --img-ease:cubic-bezier(.16,.84,.44,1);
+  --max:1280px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--tlo); color:var(--tekst);
+  font:400 17px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+img,video{max-width:100%; display:block}
+a{color:inherit}
+h1,h2,h3{margin:0 0 .5em; line-height:1.1; letter-spacing:-.02em; font-weight:600}
+h1{font-size:clamp(2.4rem,6vw,4.6rem)}
+h2{font-size:clamp(1.9rem,3.6vw,3rem)}
+h3{font-size:1.25rem}
+p{margin:0 0 1em}
+
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:10px 16px;z-index:100;border-radius:6px}
+:focus-visible{outline:2px solid var(--akcent); outline-offset:3px}
+
+/* ---------- NAWIGACJA ---------- */
+.nav{
+  position:fixed; inset:0 0 auto 0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  padding:18px clamp(20px,5vw,56px);
+  background:linear-gradient(to bottom,rgba(11,11,12,.92),rgba(11,11,12,0));
+  transition:background .3s ease, padding .3s ease;
+}
+.nav--przyklejona{background:rgba(11,11,12,.96); padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--linia)}
+.nav__logo img{width:150px;height:auto}
+.nav__links{display:flex; align-items:center; gap:clamp(14px,2.4vw,34px); font-size:.94rem}
+.nav__links a{text-decoration:none; opacity:.85; transition:opacity .2s}
+.nav__links a:hover{opacity:1}
+.nav__cta{border:1px solid rgba(242,240,238,.45); padding:9px 20px; border-radius:999px; opacity:1!important}
+.nav__cta:hover{background:var(--tekst); color:var(--tlo); border-color:var(--tekst)}
+
+/* ---------- HERO ---------- */
+.hero{position:relative; min-height:100svh; display:grid; align-items:center; overflow:hidden}
+.hero__ambient{
+  position:absolute; inset:-8%; width:116%; height:116%; object-fit:cover;
+  filter:blur(38px) saturate(1.15) brightness(.55); transform:scale(1.1);
+}
+.hero__mask{position:absolute; inset:0; background:
+  radial-gradient(120% 90% at 30% 40%,rgba(11,11,12,.55) 0%,rgba(11,11,12,.88) 60%,rgba(11,11,12,.97) 100%)}
+.hero__in{
+  position:relative; width:min(92%,var(--max)); margin:0 auto;
+  padding:130px 0 120px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,340px);
+  gap:clamp(36px,6vw,80px); align-items:center;
+}
+.hero__nad{
+  font-size:.82rem; letter-spacing:.2em; text-transform:uppercase; color:var(--tekst-cichy);
+  margin:0 0 20px; display:flex; align-items:center; gap:14px;
+}
+.hero__nad::before{content:""; width:42px; height:1.5px; background:var(--akcent)}
+.hero__sub{font-size:clamp(1.05rem,1.6vw,1.24rem); color:#ddd9d6; max-width:46ch; margin:0 0 2rem}
+.hero__akcje{display:flex; gap:14px; flex-wrap:wrap}
+.hero__ekran{
+  aspect-ratio:9/16; border-radius:10px; overflow:hidden; background:#000;
+  box-shadow:0 40px 90px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.08);
+}
+.hero__pion{width:100%; height:100%; object-fit:cover}
+.hero__strzalka{
+  position:absolute; bottom:34px; left:50%; transform:translateX(-50%);
+  width:22px; height:38px; border:1.5px solid rgba(242,240,238,.5); border-radius:12px;
+}
+.hero__strzalka::after{
+  content:""; position:absolute; left:50%; top:8px; width:3px; height:7px; border-radius:2px;
+  background:var(--tekst); transform:translateX(-50%); animation:mysz 2s ease-in-out infinite;
+}
+@keyframes mysz{0%,100%{opacity:.25}50%{opacity:1}}
+
+.btn{
+  display:inline-block; text-decoration:none; font-size:.95rem; font-weight:500;
+  padding:14px 30px; border-radius:999px; transition:all .25s ease; border:1px solid transparent; cursor:pointer;
+}
+.btn--pelny{background:var(--tekst); color:var(--tlo)}
+.btn--pelny:hover{background:var(--akcent); color:#fff}
+.btn--pusty{border-color:rgba(242,240,238,.5); color:var(--tekst)}
+.btn--pusty:hover{background:rgba(242,240,238,.12)}
+.btn--szeroki{width:100%; font-size:1rem}
+
+/* ---------- PASEK DOWODU ---------- */
+.dowod{border-top:1px solid var(--linia); border-bottom:1px solid var(--linia); background:var(--tlo-2)}
+.dowod__in{
+  width:min(96%,1440px); margin:0 auto; display:grid; grid-template-columns:repeat(5,1fr);
+  align-items:stretch; text-align:center;
+}
+.dowod__poz{padding:26px 14px; display:flex; flex-direction:column; justify-content:center; gap:4px}
+.dowod__poz + .dowod__poz{border-left:1px solid var(--akcent)}
+.dowod__k{font-size:1.02rem; font-weight:600; letter-spacing:-.01em}
+.dowod__v{font-size:.83rem; color:var(--tekst-cichy)}
+
+/* ---------- SEKCJE ---------- */
+section[id]{scroll-margin-top:86px}
+.sekcja__glowa{width:min(92%,var(--max)); margin:0 auto; padding:clamp(70px,9vw,120px) 0 40px}
+.sekcja__glowa p{color:var(--tekst-cichy); max-width:min(100%,520px); margin:0}
+
+/* ŚCIANA REALIZACJI */
+.sciana{
+  width:min(92%,var(--max)); margin:0 auto clamp(70px,9vw,120px);
+  display:grid; grid-template-columns:repeat(4,1fr); gap:18px;
+}
+.kafel{
+  position:relative; border:0; padding:0; margin:0; background:#000; cursor:pointer;
+  aspect-ratio:9/16; overflow:hidden; border-radius:6px; display:block; text-align:left;
+  color:var(--tekst); font:inherit;
+}
+.kafel__v{
+  width:100%; height:100%; object-fit:cover;
+  transition:transform var(--img-dur) var(--img-ease), filter var(--img-dur) var(--img-ease);
+}
+.kafel:hover .kafel__v,.kafel:focus-visible .kafel__v{transform:scale(1.05); filter:brightness(1.06)}
+.kafel__opis{
+  position:absolute; inset:auto 0 0 0; padding:56px 18px 18px; display:block;
+  background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.55) 55%,rgba(0,0,0,0) 100%);
+}
+.kafel__t{display:block; font-weight:600; font-size:1.05rem; text-shadow:0 2px 10px rgba(0,0,0,.9)}
+.kafel__p{display:block; font-size:.86rem; color:#dedbd8; text-shadow:0 2px 10px rgba(0,0,0,.9)}
+.kafel::after{
+  content:"▶"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(.9);
+  width:58px; height:58px; display:grid; place-items:center; border-radius:50%;
+  background:rgba(0,0,0,.45); border:1.5px solid rgba(255,255,255,.7); font-size:.8rem;
+  opacity:0; transition:opacity .3s ease, transform .3s ease; backdrop-filter:blur(3px);
+}
+.kafel:hover::after,.kafel:focus-visible::after{opacity:1; transform:translate(-50%,-50%) scale(1)}
+
+/* O MNIE */
+.omnie{
+  width:min(92%,var(--max)); margin:0 auto; padding:clamp(70px,9vw,110px) 0;
+  display:grid; grid-template-columns:minmax(0,420px) minmax(0,1fr); gap:clamp(32px,6vw,80px); align-items:center;
+  border-top:1px solid var(--linia);
+}
+.omnie__foto img{width:100%; height:auto; border-radius:6px; transition:transform var(--img-dur) var(--img-ease)}
+.omnie__foto{overflow:hidden; border-radius:6px}
+.omnie__foto:hover img{transform:scale(1.05)}
+.omnie__tekst .lead{font-size:1.2rem; color:var(--tekst); max-width:min(100%,540px)}
+.omnie__tekst p{color:var(--tekst-cichy); max-width:min(100%,560px)}
+.omnie__tekst .btn{margin-top:14px}
+
+/* PAS ZE SCENĄ */
+.pas{position:relative; border-top:1px solid var(--linia); padding:clamp(40px,5vw,70px) 0}
+.pas > img,.pas__tekst{width:min(92%,1180px); margin-inline:auto}
+.pas{overflow:hidden}
+.pas img{
+  display:block; height:auto; aspect-ratio:16/9; max-height:560px; object-fit:cover;
+  object-position:center 34%; opacity:.85; border-radius:8px;
+  transition:transform var(--img-dur) var(--img-ease);
+}
+.pas:hover img{transform:scale(1.05)}
+.pas__tekst{
+  position:absolute; inset:auto 0 clamp(40px,5vw,70px) 0; padding:clamp(28px,5vw,50px) clamp(24px,3vw,44px);
+  background:linear-gradient(to top,rgba(11,11,12,.94),rgba(11,11,12,0));
+}
+.pas__haslo{
+  margin:0; font-size:clamp(1.3rem,2.6vw,2.1rem);
+  font-weight:600; letter-spacing:-.02em;
+}
+.pas__opis{margin:6px 0 0; color:var(--tekst-cichy); font-size:.98rem}
+
+/* ZAKRES */
+.zakres{border-top:1px solid var(--linia)}
+.zakres__siatka{
+  width:min(92%,var(--max)); margin:0 auto clamp(70px,9vw,120px);
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--linia);
+}
+.karta{background:var(--tlo); padding:34px 26px 40px}
+.karta__nr{display:block; color:#e8836f; font-size:.8rem; letter-spacing:.16em; margin-bottom:18px}
+.karta p{color:var(--tekst-cichy); font-size:.96rem; margin:0}
+
+/* KONTAKT */
+.kontakt{background:var(--tlo-2); border-top:1px solid var(--linia)}
+.kontakt__in{
+  width:min(92%,var(--max)); margin:0 auto; padding:clamp(70px,9vw,110px) 0;
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,460px); gap:clamp(36px,6vw,80px); align-items:start;
+}
+.kontakt__lewa p{color:var(--tekst-cichy); max-width:min(100%,545px)}
+.kontakt__lista{list-style:none; padding:0; margin:26px 0; display:grid; gap:12px}
+.kontakt__lista li{padding-left:22px; position:relative; color:var(--tekst); font-size:.98rem}
+.kontakt__lista li::before{content:""; position:absolute; left:0; top:.62em; width:9px; height:1.5px; background:var(--akcent)}
+.kontakt__bezpo{font-size:.95rem}
+.kontakt__bezpo a{color:var(--tekst); text-underline-offset:3px}
+
+.formularz{display:grid; gap:16px; background:var(--tlo); padding:30px; border:1px solid var(--linia); border-radius:8px}
+.formularz label{display:grid; gap:7px; font-size:.88rem; color:var(--tekst-cichy)}
+.formularz input,.formularz textarea{
+  font:inherit; font-size:.97rem; color:var(--tekst); background:var(--tlo-2);
+  border:1px solid var(--linia); border-radius:6px; padding:13px 14px; width:100%; resize:vertical;
+}
+.formularz input:focus,.formularz textarea:focus{border-color:var(--akcent); outline:none}
+.formularz__info{margin:0; font-size:.9rem; min-height:1.2em}
+.formularz__info--ok{color:#7fc99a}
+.formularz__info--blad{color:#e08a7c}
+
+/* STOPKA */
+.stopka{border-top:1px solid var(--linia); padding:clamp(46px,6vw,70px) 0 26px}
+.stopka__in{
+  width:min(92%,var(--max)); margin:0 auto; display:flex; justify-content:space-between;
+  gap:32px; flex-wrap:wrap; align-items:flex-start;
+}
+.stopka__logo{width:170px;height:auto}
+.stopka__opis{color:var(--tekst-cichy); font-size:.92rem; margin:12px 0 0}
+.stopka__kontakt{display:grid; gap:8px; font-size:.94rem; text-align:right}
+.stopka__kontakt a{text-decoration:none; color:var(--tekst-cichy); transition:color .2s}
+.stopka__kontakt a:hover{color:var(--tekst)}
+.stopka__social{display:flex; gap:16px; justify-content:flex-end; margin-top:6px}
+.stopka__podpis{
+  width:min(92%,var(--max)); margin:38px auto 0; padding-top:20px; border-top:1px solid var(--linia);
+  font-size:.84rem; color:var(--tekst-cichy);
+}
+.stopka__podpis a{color:var(--tekst)}
+
+/* LIGHTBOX */
+.lightbox{position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.93); display:grid; place-items:center; padding:24px}
+.lightbox[hidden]{display:none}
+.lightbox__ramka{margin:0; display:grid; gap:12px; justify-items:center; max-width:min(94vw,520px)}
+.lightbox__ramka video{
+  width:100%; aspect-ratio:9/16; max-height:82vh; object-fit:contain;
+  border-radius:8px; background:#000;
+}
+.lightbox__ramka figcaption{font-size:.92rem; color:var(--tekst-cichy)}
+.lightbox__zamknij{
+  position:absolute; top:22px; right:26px; width:46px; height:46px; border-radius:50%;
+  background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.3); color:#fff;
+  font-size:1.7rem; line-height:1; cursor:pointer;
+}
+.lightbox__zamknij:hover{background:rgba(255,255,255,.2)}
+
+/* ---------- RESPONSYWNOŚĆ ---------- */
+@media (max-width:1000px){
+  .sciana{grid-template-columns:repeat(2,1fr)}
+  .zakres__siatka{grid-template-columns:repeat(2,1fr)}
+  .omnie{grid-template-columns:1fr; max-width:620px}
+  .kontakt__in{grid-template-columns:1fr}
+  .dowod__in{grid-template-columns:repeat(3,1fr)}
+  .dowod__poz:nth-child(3n+1){border-left:0}
+  .dowod__poz:nth-child(n+4){border-top:1px solid var(--linia)}
+}
+@media (max-width:900px){
+  .hero__in{grid-template-columns:1fr; padding-top:110px; padding-bottom:90px}
+  .hero__ekran{max-width:280px; margin:0 auto}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .hero__ekran{max-width:230px}
+  .hero__nad{font-size:.74rem}
+  .nav{padding:14px 20px}
+  .nav__logo img{width:118px}
+  .nav__links{gap:12px; font-size:.86rem}
+  .nav__links a:not(.nav__cta){display:none}
+  .sciana{grid-template-columns:1fr; gap:14px; max-width:420px}
+  .zakres__siatka{grid-template-columns:1fr}
+  .dowod__in{grid-template-columns:repeat(2,1fr)}
+  .dowod__poz:nth-child(2n+1){border-left:0}
+  .dowod__poz:nth-child(n+3){border-top:1px solid var(--linia)}
+  .stopka__in{flex-direction:column}
+  .stopka__kontakt{text-align:left}
+  .stopka__social{justify-content:flex-start}
+  .formularz{padding:22px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important; transition:none!important; scroll-behavior:auto!important}
+}
+
+/* PASEK KONTAKTU NA TELEFONIE */
+.pasek-mob{display:none}
+@media (max-width:768px){
+  .pasek-mob{
+    position:fixed; left:0; right:0; bottom:0; z-index:60; display:grid; grid-template-columns:1fr 1fr;
+    gap:1px; background:var(--linia); border-top:1px solid var(--linia);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .pasek-mob a{
+    background:var(--tlo); text-align:center; padding:15px 8px; text-decoration:none;
+    font-size:.95rem; font-weight:500;
+  }
+  .pasek-mob--akcent{background:var(--akcent); color:#fff}
+  body{padding-bottom:56px}
+}
+
+/* ============================================================
+   OŚ PROCESU — wzorzec z naszych dem (sticky bok + licznik + pasek
+   postępu; kroki zapalają się przy przewijaniu).
+   Bezpiecznik: stan „zgaszony" nadaje WYŁĄCZNIE skrypt (klasa .os-on
+   na <html>) — bez JS wszystkie kroki są normalnie widoczne.
+   ============================================================ */
+.proces{border-top:1px solid var(--linia)}
+.proces__in{
+  width:min(92%,var(--max)); margin:0 auto; padding:clamp(70px,9vw,120px) 0;
+  display:grid; grid-template-columns:34% 1fr; gap:clamp(32px,6vw,80px); align-items:start;
+}
+.proces__bok{position:sticky; top:120px}
+.proces__nad{
+  font-size:.78rem; letter-spacing:.2em; text-transform:uppercase; color:var(--tekst-cichy);
+  margin:0 0 14px; display:flex; align-items:center; gap:12px;
+}
+.proces__nad::before{content:""; width:32px; height:1.5px; background:var(--akcent)}
+.proces__opis{color:var(--tekst-cichy); max-width:min(100%,380px); font-size:.98rem}
+.proces__licznik{display:flex; align-items:baseline; gap:10px; margin-top:34px}
+.proces__teraz{font-size:2.8rem; line-height:1; color:#e8836f; font-variant-numeric:tabular-nums}
+.proces__ile{font-size:1rem; color:var(--tekst-cichy); font-variant-numeric:tabular-nums}
+.proces__pasek{height:2px; background:var(--linia); border-radius:2px; overflow:hidden; max-width:220px; margin-top:14px}
+.proces__pasek > i{display:block; height:100%; width:25%; background:#e8836f; transition:width .45s var(--img-ease)}
+.proces__krok{color:var(--tekst-cichy); font-size:.92rem; margin:14px 0 0; min-height:1.4em}
+
+.proces__lista{
+  list-style:none; margin:0; padding:0 0 0 34px; position:relative;
+  display:flex; flex-direction:column; gap:clamp(26px,4vw,44px);
+}
+.proces__lista::before{
+  content:""; position:absolute; left:5px; top:8px; bottom:8px; width:1px; background:var(--linia);
+}
+.proces__lista > li{position:relative; padding-bottom:4px}
+.proces__lista > li::before{
+  content:""; position:absolute; left:-34px; top:9px; width:11px; height:11px; border-radius:50%;
+  background:var(--tlo); border:1.5px solid var(--linia); transition:border-color .4s ease, background .4s ease;
+}
+.proces__lista > li h3{margin:0 0 8px}
+.proces__lista > li p{color:var(--tekst-cichy); font-size:.97rem; margin:0; max-width:min(100%,560px)}
+.proces__nr{
+  display:block; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--tekst-cichy); margin-bottom:8px;
+}
+
+/* stany zapalania — TYLKO gdy skrypt wstał */
+.os-on .proces__lista > li{opacity:.32; transform:translateY(6px); transition:opacity .5s ease, transform .5s ease}
+.os-on .proces__lista > li.os-teraz,
+.os-on .proces__lista > li.os-bylo{opacity:1; transform:none}
+.os-on .proces__lista > li.os-teraz::before{background:#e8836f; border-color:#e8836f}
+.os-on .proces__lista > li.os-bylo::before{border-color:#e8836f}
+.os-on .proces__lista > li.os-teraz .proces__nr{color:#e8836f}
+
+@media (max-width:900px){
+  .proces__in{grid-template-columns:1fr; gap:34px}
+  .proces__bok{position:static}
+  .proces__licznik,.proces__pasek,.proces__krok{display:none}
+}
+
+/* ============================================================
+   PODSTRONY
+   ============================================================ */
+.podtytul{border-bottom:1px solid var(--linia); background:var(--tlo-2)}
+.podtytul__in{width:min(92%,var(--max)); margin:0 auto; padding:clamp(130px,14vw,190px) 0 clamp(50px,6vw,80px)}
+.podtytul__nad{
+  font-size:.78rem; letter-spacing:.2em; text-transform:uppercase; color:var(--tekst-cichy);
+  margin:0 0 16px; display:flex; align-items:center; gap:12px;
+}
+.podtytul__nad::before{content:""; width:32px; height:1.5px; background:var(--akcent)}
+.podtytul h1{font-size:clamp(2.1rem,4.6vw,3.6rem); margin-bottom:.35em}
+.podtytul__opis{color:var(--tekst-cichy); max-width:min(100%,600px); font-size:1.05rem; margin:0}
+
+/* CASE STUDY */
+.case{
+  width:min(92%,var(--max)); margin:0 auto; padding:clamp(56px,7vw,96px) 0;
+  display:grid; grid-template-columns:minmax(0,330px) minmax(0,1fr); gap:clamp(32px,5vw,72px);
+  align-items:start; border-bottom:1px solid var(--linia);
+}
+.case--odwrot{direction:rtl}
+.case--odwrot > *{direction:ltr}
+.case__ekran{position:sticky; top:110px}
+.kafel--case{aspect-ratio:9/16; width:100%}
+.case__typ{
+  font-size:.78rem; letter-spacing:.16em; text-transform:uppercase; color:#e8836f; margin:0 0 10px;
+}
+.case__tekst h2{font-size:clamp(1.7rem,3vw,2.4rem); margin-bottom:.7em}
+.case__blok{margin-bottom:26px}
+.case__blok h3{font-size:.95rem; color:var(--tekst); margin:0 0 7px}
+.case__blok p{color:var(--tekst-cichy); margin:0; max-width:min(100%,560px); font-size:.98rem}
+.case__lista{list-style:none; padding:0; margin:0; display:grid; gap:9px}
+.case__lista li{
+  padding-left:22px; position:relative; color:var(--tekst-cichy); font-size:.97rem;
+  max-width:min(100%,560px);
+}
+.case__lista li::before{content:""; position:absolute; left:0; top:.62em; width:9px; height:1.5px; background:var(--akcent)}
+.case__efekt{
+  margin:0; padding:20px 26px 20px 30px; border-left:2px solid var(--akcent); background:var(--tlo-2);
+  color:var(--tekst); font-size:1rem; max-width:min(100%,580px); border-radius:0 6px 6px 0;
+}
+
+/* ZASADY (o mnie) */
+.zasady{border-top:1px solid var(--linia)}
+.zasady__siatka{
+  width:min(92%,var(--max)); margin:0 auto clamp(70px,9vw,110px);
+  display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--linia);
+}
+.zasada{background:var(--tlo); padding:32px 28px 36px}
+.zasada h3{margin:0 0 10px}
+.zasada p{color:var(--tekst-cichy); font-size:.97rem; margin:0; max-width:min(100%,460px)}
+.omnie--pod{border-top:0; padding-top:clamp(56px,7vw,90px)}
+
+/* DWIE KOLUMNY (współpraca) */
+.dwie{border-top:1px solid var(--linia); background:var(--tlo-2)}
+.dwie__in{
+  width:min(92%,var(--max)); margin:0 auto; padding:clamp(60px,8vw,100px) 0;
+  display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(32px,5vw,72px);
+}
+.dwie__kol h2{font-size:clamp(1.5rem,2.6vw,2rem)}
+.lista-tak,.lista-nie{list-style:none; padding:0; margin:22px 0 0; display:grid; gap:13px}
+.lista-tak li,.lista-nie li{
+  padding-left:30px; position:relative; color:var(--tekst-cichy); font-size:.98rem;
+  max-width:min(100%,480px);
+}
+.lista-tak li::before{
+  content:""; position:absolute; left:2px; top:.42em; width:12px; height:6px;
+  border-left:2px solid #7fc99a; border-bottom:2px solid #7fc99a; transform:rotate(-45deg);
+}
+.lista-nie li::before{
+  content:""; position:absolute; left:4px; top:.55em; width:11px; height:2px;
+  background:#e08a7c;
+}
+
+/* FAQ */
+.faq{border-top:1px solid var(--linia)}
+.faq__lista{width:min(92%,var(--max)); margin:0 auto clamp(70px,9vw,110px); display:grid; gap:1px; background:var(--linia)}
+.faq__poz{background:var(--tlo); padding:0}
+.faq__poz summary{
+  cursor:pointer; padding:22px 26px; font-size:1.05rem; font-weight:500; list-style:none;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.faq__poz summary::-webkit-details-marker{display:none}
+.faq__poz summary::after{content:"+"; color:#e8836f; font-size:1.4rem; line-height:1; flex:none}
+.faq__poz[open] summary::after{content:"–"}
+.faq__poz p{margin:0; padding:0 26px 24px; color:var(--tekst-cichy); max-width:min(100%,640px); font-size:.98rem}
+
+/* CTA */
+.cta{border-top:1px solid var(--linia); background:var(--tlo-2)}
+.cta__in{
+  width:min(92%,var(--max)); margin:0 auto; padding:clamp(64px,8vw,110px) 0; text-align:center;
+}
+.cta__in h2{margin-bottom:.4em}
+.cta__in p{color:var(--tekst-cichy); max-width:min(100%,560px); margin:0 auto 30px}
+
+/* drobne */
+.link-strzalka{
+  display:inline-flex; align-items:center; gap:9px; text-decoration:none; color:var(--tekst);
+  border-bottom:1px solid var(--linia); padding-bottom:4px; transition:border-color .25s, gap .25s;
+}
+.link-strzalka::after{content:"→"; color:#e8836f; transition:transform .25s}
+.link-strzalka:hover{border-color:#e8836f}
+.link-strzalka:hover::after{transform:translateX(4px)}
+.sciana__wiecej{width:min(92%,var(--max)); margin:-40px auto clamp(70px,9vw,120px)}
+.btn--maly{padding:10px 20px; font-size:.88rem}
+.stopka__marka{max-width:320px}
+.stopka__menu{display:grid; gap:9px; font-size:.94rem}
+.stopka__menu a{text-decoration:none; color:var(--tekst-cichy); transition:color .2s}
+.stopka__menu a:hover{color:var(--tekst)}
+.nav__burger{display:none}
+[aria-current="page"]{opacity:1; color:#e8836f}
+
+@media (max-width:1000px){
+  .case{grid-template-columns:minmax(0,260px) minmax(0,1fr)}
+  .zasady__siatka{grid-template-columns:1fr}
+  .dwie__in{grid-template-columns:1fr; gap:40px}
+}
+
+/* ============================================================
+   MENU NA TELEFONIE — pełne, nie okrojone (4 podstrony muszą być dostępne)
+   ============================================================ */
+@media (max-width:760px){
+  .nav__burger{
+    display:grid; gap:6px; width:44px; height:44px; place-content:center;
+    background:none; border:0; cursor:pointer; padding:0; z-index:2;
+  }
+  .nav__burger span{
+    display:block; width:24px; height:1.5px; background:var(--tekst);
+    transition:transform .3s var(--img-ease), opacity .25s ease;
+  }
+  .nav__burger[aria-expanded="true"] span:first-child{transform:translateY(3.75px) rotate(45deg)}
+  .nav__burger[aria-expanded="true"] span:last-child{transform:translateY(-3.75px) rotate(-45deg)}
+
+  .nav__links{
+    position:fixed; inset:0; background:rgba(11,11,12,.985);
+    flex-direction:column; justify-content:center; align-items:flex-start;
+    gap:0; padding:0 32px; font-size:1.6rem;
+    opacity:0; pointer-events:none; transition:opacity .3s ease;
+  }
+  .nav--otwarte .nav__links{opacity:1; pointer-events:auto}
+  .nav__links a:not(.nav__cta){display:block; width:100%; padding:18px 0; border-bottom:1px solid var(--linia); opacity:1}
+  .nav__links .nav__cta{
+    margin-top:28px; font-size:1rem; padding:14px 30px; border-color:var(--akcent);
+    background:var(--akcent); color:#fff;
+  }
+  .nav--otwarte{background:transparent}
+}
+
+/* ============================================================
+   TELEFON — układy jednokolumnowe. Bez tego case study wychodziło
+   poza ekran (zmierzone: 454 px treści przy 390 px ekranu).
+   ============================================================ */
+@media (max-width:760px){
+  .case{
+    grid-template-columns:1fr; gap:26px; padding:44px 0;
+  }
+  .case--odwrot{direction:ltr}
+  .case__ekran{position:static; max-width:300px}
+  .case__efekt{padding:16px 18px}
+  .podtytul__in{padding-top:clamp(110px,26vw,150px)}
+  .faq__poz summary{padding:18px 20px; font-size:1rem}
+  .faq__poz p{padding:0 20px 20px}
+  .zasada{padding:26px 22px 30px}
+  .cta__in{padding:56px 0}
+  .stopka__in{gap:26px}
+  .stopka__marka{max-width:none}
+}
+/* nic nie ma prawa wystawać poza ekran */
+html,body{overflow-x:hidden; max-width:100%}
+img,video,iframe{height:auto}
+
+/* pas kadrów pod nagłówkiem podstrony (reguła: zaraz po hero obraz, nie ściana tekstu) */
+.taras{border-bottom:1px solid var(--linia)}
+.taras__in{
+  width:min(92%,var(--max)); margin:0 auto; padding:clamp(34px,4vw,56px) 0;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+}
+.taras__kafel{margin:0; position:relative; overflow:hidden; border-radius:6px; aspect-ratio:4/5; background:#000}
+.taras__kafel img{width:100%; height:100%; object-fit:cover; transition:transform var(--img-dur) var(--img-ease)}
+.taras__kafel:hover img{transform:scale(1.05)}
+.taras__kafel figcaption{
+  position:absolute; inset:auto 0 0 0; padding:44px 16px 14px;
+  background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.5) 55%,rgba(0,0,0,0) 100%);
+}
+.taras__t{display:block; font-weight:600; font-size:.98rem; text-shadow:0 2px 10px rgba(0,0,0,.9)}
+.taras__p{display:block; font-size:.83rem; color:#dedbd8; text-shadow:0 2px 10px rgba(0,0,0,.9)}
+@media (max-width:760px){
+  .taras__in{grid-template-columns:1fr 1fr; gap:12px}
+  .taras__kafel:last-child{display:none}
+}

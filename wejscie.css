@@ -1,0 +1,55 @@
+/* ============================================================
+   EKRAN WEJŚCIA — „kadr filmowy”
+   Dwie płyty (góra/dół) rozsuwają się jak pasy w filmie kinowym,
+   odsłaniając stronę. Opowiada produkt klienta: wideo.
+
+   BEZPIECZNIKI (wszystkie obowiązkowe):
+   1) zasłona domyślnie display:none — włącza ją WYŁĄCZNIE skrypt,
+   2) twardy limit czasu zdejmuje ją niezależnie od wszystkiego,
+   3) klik / scroll / dotyk / klawisz przerywa natychmiast,
+   4) prefers-reduced-motion pomija całość.
+   Bez JS albo przy jego błędzie strona wygląda normalnie — nigdy pusty ekran.
+   ============================================================ */
+
+.wejscie{display:none}
+
+.wejscie-gra .wejscie{
+  display:block; position:fixed; inset:0; z-index:300; pointer-events:none;
+}
+
+/* płyty — zasłaniają tylko one, tło jest przezroczyste */
+.wejscie__plyta{
+  position:absolute; left:0; right:0; height:50.5%; background:var(--tlo,#0b0b0c);
+  transition:transform 620ms cubic-bezier(.76,0,.24,1);
+}
+.wejscie__plyta--gora{top:0}
+.wejscie__plyta--dol{bottom:0}
+
+/* logo w środku kadru */
+.wejscie__logo{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:min(64vw,330px); opacity:0;
+  transition:opacity 300ms ease;
+}
+.wejscie__kreska{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,calc(-50% + 42px));
+  width:0; height:1.5px; background:var(--akcent,#c8452f);
+  transition:width 420ms cubic-bezier(.16,.84,.44,1);
+}
+
+/* faza 1: logo się pokazuje, kreska rozjeżdża */
+.wejscie-gra.wejscie-f1 .wejscie__logo{opacity:1}
+.wejscie-gra.wejscie-f1 .wejscie__kreska{width:min(46vw,190px)}
+
+/* faza 2: kadr się rozsuwa, logo znika */
+.wejscie-gra.wejscie-f2 .wejscie__logo,
+.wejscie-gra.wejscie-f2 .wejscie__kreska{opacity:0; transition-duration:220ms}
+.wejscie-gra.wejscie-f2 .wejscie__plyta--gora{transform:translateY(-100%)}
+.wejscie-gra.wejscie-f2 .wejscie__plyta--dol{transform:translateY(100%)}
+
+/* treść pod spodem czeka spokojnie, bez mrugania */
+.wejscie-gra body{overflow:hidden}
+
+@media (prefers-reduced-motion:reduce){
+  .wejscie{display:none !important}
+}

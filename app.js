@@ -1,0 +1,172 @@
+/* Maciej Raciborski — demo Impulseo */
+(function () {
+  'use strict';
+
+  /* --- nawigacja: przyklejenie po zjechaniu z hero --- */
+  var nav = document.querySelector('.nav');
+  var ostatni = -1;
+  addEventListener('scroll', function () {
+    var y = scrollY > 60;
+    if (y !== ostatni) { nav.classList.toggle('nav--przyklejona', y); ostatni = y; }
+  }, { passive: true });
+
+  /* --- kafle: pętla rusza dopiero po najechaniu (plik wczytuje się wtedy) --- */
+  document.querySelectorAll('.kafel').forEach(function (kafel) {
+    var v = kafel.querySelector('.kafel__v');
+    if (!v) return;
+
+    function start() {
+      if (v.preload === 'none') { v.preload = 'auto'; v.load(); }
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    function stop() { v.pause(); try { v.currentTime = 0; } catch (e) {} }
+
+    kafel.addEventListener('mouseenter', start);
+    kafel.addEventListener('mouseleave', stop);
+    kafel.addEventListener('focus', start);
+    kafel.addEventListener('blur', stop);
+  });
+
+  /* --- na telefonie: pętla startuje, gdy kafel wjedzie w kadr (po jednym) --- */
+  var dotyk = matchMedia('(hover:none)').matches;
+  if (dotyk && 'IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (wpisy) {
+      wpisy.forEach(function (w) {
+        var v = w.target.querySelector('.kafel__v');
+        if (!v) return;
+        if (w.isIntersecting) {
+          if (v.preload === 'none') { v.preload = 'auto'; v.load(); }
+          var p = v.play(); if (p && p.catch) p.catch(function () {});
+        } else { v.pause(); }
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.kafel').forEach(function (k) { obs.observe(k); });
+  }
+
+  /* --- odtwarzacz pełnego filmu --- */
+  var lb = document.getElementById('lightbox');
+  var lbV = document.getElementById('lightbox-video');
+  var lbT = document.getElementById('lightbox-tytul');
+  var lbX = document.getElementById('lightbox-zamknij');
+  var wracaDo = null;
+
+  function otworz(src, tytul, zrodlo, plakat) {
+    wracaDo = zrodlo || null;
+    if (plakat) lbV.poster = plakat;
+    lbV.preload = 'auto';
+    lbV.src = src;
+    lbV.load();
+    lbT.textContent = tytul || '';
+    lb.hidden = false;
+    document.body.style.overflow = 'hidden';
+    lbX.focus();
+    var p = lbV.play(); if (p && p.catch) p.catch(function () {});
+  }
+  function zamknij() {
+    lbV.pause(); lbV.removeAttribute('src'); lbV.load();
+    lb.hidden = true;
+    document.body.style.overflow = '';
+    if (wracaDo) wracaDo.focus();
+  }
+
+  document.querySelectorAll('.kafel').forEach(function (kafel) {
+    kafel.addEventListener('click', function () {
+      var v = kafel.querySelector('.kafel__v');
+      otworz(kafel.dataset.full, kafel.dataset.tytul, kafel, v ? v.getAttribute('poster') : null);
+    });
+  });
+  lbX.addEventListener('click', zamknij);
+  lb.addEventListener('click', function (e) { if (e.target === lb) zamknij(); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) zamknij(); });
+
+  /* --- formularz (demo: bez wysyłki na serwer) --- */
+  var form = document.getElementById('formularz');
+  var info = document.getElementById('formularz-info');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var imie = form.imie.value.trim();
+    var kontakt = form.kontakt.value.trim();
+    info.className = 'formularz__info';
+
+    if (imie.length < 2 || kontakt.length < 5) {
+      info.textContent = 'Uzupełnij imię oraz telefon lub e-mail — inaczej nie mam jak odpisać.';
+      info.classList.add('formularz__info--blad');
+      return;
+    }
+    info.textContent = 'Dziękuję. Odezwę się w ciągu 24 godzin. (To wersja demonstracyjna — zgłoszenie nie zostało wysłane.)';
+    info.classList.add('formularz__info--ok');
+    form.reset();
+  });
+})();
+
+/* ============================================================
+   OŚ PROCESU — licznik, pasek postępu, zapalanie kroków.
+   Osobny blok w try: błąd tutaj nie kładzie reszty strony.
+   ============================================================ */
+(function () {
+  'use strict';
+  try {
+    if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    var sek = document.querySelector('.proces');
+    if (!sek) return;
+    var kroki = [].slice.call(sek.querySelectorAll('.proces__lista > li'));
+    if (kroki.length < 2) return;
+
+    var teraz = sek.querySelector('.proces__teraz');
+    var pasek = sek.querySelector('.proces__pasek > i');
+    var nazwa = sek.querySelector('.proces__krok');
+    document.documentElement.classList.add('os-on');
+
+    var aktualny = -1;
+    function odswiez() {
+      var srodek = innerHeight * 0.55, wybrany = 0;
+      kroki.forEach(function (li, i) {
+        if (li.getBoundingClientRect().top <= srodek) wybrany = i;
+      });
+      if (wybrany === aktualny) return;
+      aktualny = wybrany;
+      kroki.forEach(function (li, i) {
+        li.classList.toggle('os-teraz', i === wybrany);
+        li.classList.toggle('os-bylo', i < wybrany);
+      });
+      var nr = String(wybrany + 1).padStart(2, '0');
+      if (teraz) teraz.textContent = nr;
+      if (pasek) pasek.style.width = ((wybrany + 1) / kroki.length * 100) + '%';
+      var h3 = kroki[wybrany].querySelector('h3');
+      if (nazwa && h3) nazwa.textContent = h3.textContent;
+    }
+
+    var czeka = false;
+    addEventListener('scroll', function () {
+      if (czeka) return;
+      czeka = true;
+      requestAnimationFrame(function () { odswiez(); czeka = false; });
+    }, { passive: true });
+    odswiez();
+  } catch (e) { /* jeden efekt mniej, strona działa */ }
+})();
+
+/* ---- menu na telefonie ---- */
+(function () {
+  try {
+    var burger = document.querySelector('.nav__burger');
+    var navEl = document.querySelector('.nav');
+    if (!burger || !navEl) return;
+    burger.addEventListener('click', function () {
+      var otwarte = navEl.classList.toggle('nav--otwarte');
+      burger.setAttribute('aria-expanded', otwarte ? 'true' : 'false');
+      document.body.style.overflow = otwarte ? 'hidden' : '';
+    });
+    navEl.querySelectorAll('.nav__links a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        navEl.classList.remove('nav--otwarte');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+    addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navEl.classList.contains('nav--otwarte')) burger.click();
+    });
+  } catch (e) {}
+})();
