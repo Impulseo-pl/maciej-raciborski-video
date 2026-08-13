@@ -178,3 +178,24 @@
     });
   } catch (e) {}
 })();
+
+/* ---- pasek akcji na telefonie chowa się na pierwszym ekranie ----
+   Powód: zasłaniał rolkę w hero, czyli najmocniejszy element strony (uwaga K. 13.08).
+   Warunek oparty na przewinięciu, nie na widoczności hero — hero bywa wyższe niż ekran,
+   więc obserwator trzymał pasek schowany zbyt długo (zmierzone: 600 px i nadal ukryty). */
+(function () {
+  try {
+    var html = document.documentElement;
+    if (!document.querySelector('.hero')) return;      // podstrony mają pasek od razu
+    var prog = function () { return Math.min(innerHeight * 0.62, 480); };
+    var ustaw = function () { html.classList.toggle('hero-widoczne', scrollY < prog()); };
+    ustaw();
+    var czeka = false;
+    addEventListener('scroll', function () {
+      if (czeka) return;
+      czeka = true;
+      requestAnimationFrame(function () { ustaw(); czeka = false; });
+    }, { passive: true });
+    addEventListener('resize', ustaw, { passive: true });
+  } catch (e) {}
+})();

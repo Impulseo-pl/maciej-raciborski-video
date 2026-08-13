@@ -101,19 +101,22 @@ def strona_glowna():
     <div class="hero__mask"></div>
 
     <div class="hero__in">
-      <div class="hero__tekst">
+      <div class="hero__naglowek">
         <p class="hero__nad">Wideo i social media dla marek</p>
         <h1>Buduję wizerunek marek przez wideo</h1>
-        <p class="hero__sub">Przejmuję wideo i obecność marki w social mediach w całości - od kierunku, przez produkcję, po publikację.</p>
-        <div class="hero__akcje">
-          <a class="btn btn--pelny" href="realizacje/">Zobacz realizacje</a>
-          <a class="btn btn--pusty" href="kontakt/">Umów rozmowę</a>
-        </div>
       </div>
 
       <div class="hero__ekran">
         <video class="hero__pion" src="media/rich_amiri_mascotte_v2_loop.mp4" poster="media/rich_amiri_mascotte_v2_poster.jpg"
                autoplay muted loop playsinline aria-label="Fragment realizacji: event RAGE i Mascotte"></video>
+      </div>
+
+      <div class="hero__reszta">
+        <p class="hero__sub">Przejmuję wideo i obecność marki w social mediach w całości - od kierunku, przez produkcję, po publikację.</p>
+        <div class="hero__akcje">
+          <a class="btn btn--pelny" href="realizacje/">Zobacz realizacje</a>
+          <a class="btn btn--pusty" href="kontakt/">Umów rozmowę</a>
+        </div>
       </div>
     </div>
 

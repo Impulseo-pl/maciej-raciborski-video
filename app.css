@@ -57,9 +57,14 @@ p{margin:0 0 1em}
   radial-gradient(120% 90% at 30% 40%,rgba(11,11,12,.55) 0%,rgba(11,11,12,.88) 60%,rgba(11,11,12,.97) 100%)}
 .hero__in{
   position:relative; width:min(92%,var(--max)); margin:0 auto;
-  padding:130px 0 120px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,340px);
-  gap:clamp(36px,6vw,80px); align-items:center;
+  padding:130px 0 120px; display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,340px);
+  grid-template-areas:"naglowek ekran" "reszta ekran";
+  gap:0 clamp(36px,6vw,80px); align-items:center;
 }
+.hero__naglowek{grid-area:naglowek}
+.hero__ekran{grid-area:ekran}
+.hero__reszta{grid-area:reszta; margin-top:22px}
 .hero__nad{
   font-size:.82rem; letter-spacing:.2em; text-transform:uppercase; color:var(--tekst-cichy);
   margin:0 0 20px; display:flex; align-items:center; gap:14px;
@@ -289,6 +294,10 @@ section[id]{scroll-margin-top:86px}
   }
   .pasek-mob--akcent{background:var(--akcent); color:#fff}
   body{padding-bottom:56px}
+  /* pasek chowa się, dopóki widać hero - zasłaniał rolkę, czyli najmocniejszy
+     element pierwszego ekranu (uwaga K. 13.08). Klasę zdejmuje skrypt. */
+  .pasek-mob{transition:transform .3s ease}
+  .hero-widoczne .pasek-mob{transform:translateY(110%)}
 }
 
 /* ============================================================
@@ -553,4 +562,35 @@ img,video,iframe{height:auto}
 @media (max-width:760px){
   .taras__in{grid-template-columns:1fr 1fr; gap:12px}
   .taras__kafel:last-child{display:none}
+}
+
+/* ============================================================
+   HERO NA TELEFONIE — rolka od razu pod nagłówkiem.
+   Uwaga K. 13.08: „widać tylko połowicznie rolkę, która jest najważniejsza
+   i najbardziej przyciąga uwagę". Wcześniej pod nagłówkiem szedł opis i dwa
+   duże przyciski, przez co wideo lądowało poniżej zgięcia. Teraz kolejność to
+   nagłówek → rolka → opis i przyciski.
+   ============================================================ */
+@media (max-width:900px){
+  .hero__strzalka{display:none}      /* na telefonie nachodziła na przycisk, a scroll i tak jest oczywisty */
+  .hero__in{
+    grid-template-columns:1fr;
+    grid-template-areas:"naglowek" "ekran" "reszta";
+    padding:104px 0 70px; gap:0; align-items:start; text-align:left;
+  }
+  .hero__naglowek{margin-bottom:20px}
+  .hero__ekran{max-width:none; width:min(100%,320px); margin:0 auto}
+  .hero__reszta{margin-top:26px; text-align:center}
+  .hero__akcje{justify-content:center}
+  .hero h1{font-size:clamp(2.1rem,8.2vw,3rem)}
+  .hero__nad{margin-bottom:14px}
+  .hero__sub{margin-inline:auto}
+}
+@media (max-width:640px){
+  .hero__in{padding-top:84px; padding-bottom:48px}
+  .hero__naglowek{margin-bottom:14px}
+  .hero h1{font-size:clamp(1.95rem,7.4vw,2.6rem)}
+  .hero__ekran{width:min(100%,252px)}
+  .hero__sub{font-size:1rem}
+  .hero__akcje .btn{padding:13px 26px}
 }
