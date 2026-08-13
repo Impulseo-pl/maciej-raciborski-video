@@ -153,7 +153,7 @@ def strona_glowna():
   <!-- O MNIE -->
   <section class="omnie" id="omnie">
     <div class="omnie__foto">
-      <img src="media/omnie.webp" alt="Maciej Raciborski z kamerą podczas zdjęć w plenerze" width="390" height="551" loading="lazy">
+      <img src="media/omnie.webp" alt="Maciej Raciborski z kamerą podczas zdjęć w plenerze" width="390" height="551">
     </div>
     <div class="omnie__tekst">
       <h2>Maciej Raciborski</h2>
@@ -386,11 +386,11 @@ def strona_wspolpraca():
         <figcaption><span class="taras__t">Spektaklove</span><span class="taras__p">Aftermovie z premiery</span></figcaption>
       </figure>
       <figure class="taras__kafel">
-        <img src="../media/szyon_toyota_waw_v2_poster.jpg" alt="Kadr z realizacji: materiał terenowy" loading="lazy">
+        <img src="../media/szyon_toyota_waw_v2_poster.jpg" alt="Kadr z realizacji: materiał terenowy">
         <figcaption><span class="taras__t">Toyota</span><span class="taras__p">Materiał terenowy</span></figcaption>
       </figure>
       <figure class="taras__kafel">
-        <img src="../media/rich_amiri_mascotte_v2_poster.jpg" alt="Kadr z realizacji: event i koncert" loading="lazy">
+        <img src="../media/rich_amiri_mascotte_v2_poster.jpg" alt="Kadr z realizacji: event i koncert">
         <figcaption><span class="taras__t">RAGE x Mascotte</span><span class="taras__p">Event i koncert</span></figcaption>
       </figure>
     </div>
