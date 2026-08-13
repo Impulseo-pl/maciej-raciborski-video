@@ -100,7 +100,7 @@ p{margin:0 0 1em}
 /* ---------- PASEK DOWODU ---------- */
 .dowod{border-top:1px solid var(--linia); border-bottom:1px solid var(--linia); background:var(--tlo-2)}
 .dowod__in{
-  width:min(96%,1440px); margin:0 auto; display:grid; grid-template-columns:repeat(5,1fr);
+  width:min(96%,1440px); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr);
   align-items:stretch; text-align:center;
 }
 .dowod__poz{padding:26px 14px; display:flex; flex-direction:column; justify-content:center; gap:4px}
@@ -249,9 +249,9 @@ section[id]{scroll-margin-top:86px}
   .zakres__siatka{grid-template-columns:repeat(2,1fr)}
   .omnie{grid-template-columns:1fr; max-width:620px}
   .kontakt__in{grid-template-columns:1fr}
-  .dowod__in{grid-template-columns:repeat(3,1fr)}
-  .dowod__poz:nth-child(3n+1){border-left:0}
-  .dowod__poz:nth-child(n+4){border-top:1px solid var(--linia)}
+  .dowod__in{grid-template-columns:repeat(2,1fr); gap:1px; background:var(--linia); width:100%}
+  .dowod__poz{background:var(--tlo-2)}
+  .dowod__poz + .dowod__poz{border-left:0}
 }
 @media (max-width:900px){
   .hero__in{grid-template-columns:1fr; padding-top:110px; padding-bottom:90px}
@@ -267,9 +267,11 @@ section[id]{scroll-margin-top:86px}
   .nav__links a:not(.nav__cta){display:none}
   .sciana{grid-template-columns:1fr; gap:14px; max-width:420px}
   .zakres__siatka{grid-template-columns:1fr}
-  .dowod__in{grid-template-columns:repeat(2,1fr)}
-  .dowod__poz:nth-child(2n+1){border-left:0}
-  .dowod__poz:nth-child(n+3){border-top:1px solid var(--linia)}
+  /* 5 pozycji w dwóch kolumnach zostawiało sierotę w ostatnim rzędzie i urwane
+     linie (zgłoszenie K. 13.08). Kratkę rysuje teraz jednolita siatka, a ostatnia
+     pozycja zajmuje pełną szerokość - żadnych pustych pól. */
+  .dowod__in{grid-template-columns:repeat(2,1fr); gap:1px; background:var(--linia)}
+  .dowod__poz{background:var(--tlo-2); padding:20px 12px}
   .stopka__in{flex-direction:column}
   .stopka__kontakt{text-align:left}
   .stopka__social{justify-content:flex-start}

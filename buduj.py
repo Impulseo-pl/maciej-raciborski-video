@@ -129,7 +129,6 @@ def strona_glowna():
       <div class="dowod__poz"><span class="dowod__k">Spektaklove</span><span class="dowod__v">aftermovie z eventu</span></div>
       <div class="dowod__poz"><span class="dowod__k">Toyota</span><span class="dowod__v">materiał terenowy</span></div>
       <div class="dowod__poz"><span class="dowod__k">Mascotte</span><span class="dowod__v">event i koncert</span></div>
-      <div class="dowod__poz"><span class="dowod__k">Sceny i koncerty</span><span class="dowod__v">duże realizacje</span></div>
       <div class="dowod__poz"><span class="dowod__k">Beauty</span><span class="dowod__v">rolki produktowe</span></div>
     </div>
   </section>
