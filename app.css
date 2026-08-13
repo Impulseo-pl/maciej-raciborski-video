@@ -343,6 +343,22 @@ section[id]{scroll-margin-top:86px}
 .os-on .proces__lista > li.os-bylo::before{border-color:#e8836f}
 .os-on .proces__lista > li.os-teraz .proces__nr{color:#e8836f}
 
+/* DROGA PRZEWIJANIA NA KROK (uwaga K. 13.08: „to może być dłuższe, a nie takie szybkie").
+   Ta sama lekcja co w silniku dem 09.08: NIE spowalniamy animacji - podświetlenie musi
+   trzymać się palca, inaczej strona sprawia wrażenie zacinającej się. Zamiast tego każdy
+   krok dostaje własny kawałek ekranu do przewinięcia, więc oś czyta się krok po kroku.
+   Tylko duży ekran - na telefonie sticky-kolumny i tak nie ma, a rozciąganie zamieniłoby
+   sekcję w tunel. */
+@media (min-width:901px){
+  .proces__lista{gap:0}
+  .proces__lista > li{
+    min-height:38vh; display:flex; flex-direction:column; justify-content:center;
+    padding-block:2vh;
+  }
+  .proces__lista > li::before{top:calc(50% - 5px)}   /* kropka na wysokości treści kroku */
+  .proces__in{padding-bottom:clamp(90px,12vw,160px)}
+}
+
 @media (max-width:900px){
   .proces__in{grid-template-columns:1fr; gap:34px}
   .proces__bok{position:static}
