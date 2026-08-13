@@ -24,11 +24,14 @@
     if (reduce || (bylo && !wymus)) return;
     try { sessionStorage.setItem('mr-wejscie', '1'); } catch (e) {}
 
+    /* kadry w PEŁNEJ rozdzielczości (900×1600) — plakaty filmów mają 506 px szerokości
+       i rozciągnięte na cały ekran robiły się papką (zgłoszenie K. 13.08). Kadr pokazujemy
+       teraz w całości (contain), więc piksele idą 1:1 zamiast 3× w górę. */
     var KADRY = [
-      'media/aftermovie_poster.jpg',
-      'media/szyon_toyota_waw_v2_poster.jpg',
-      'media/rich_amiri_mascotte_v2_poster.jpg',
-      'media/Manicure-reels1_poster.jpg'
+      'media/aftermovie_intro.webp',
+      'media/szyon_toyota_waw_v2_intro.webp',
+      'media/rich_amiri_mascotte_v2_intro.webp',
+      'media/Manicure-reels1_intro.webp'
     ];
     var KLATKA = 130;                     // ile trwa jeden kadr
     var PODPIS = KADRY.length * KLATKA;   // 520 ms — wtedy wchodzi podpis
@@ -64,7 +67,10 @@
       var baza = window.MR_BAZA || '';
       function kadry() {
         return '<div class="wejscie__kadry">' + KADRY.map(function (k, i) {
-          return '<img class="wejscie__kadr" data-i="' + i + '" src="' + baza + k + '" alt="">';
+          return '<div class="wejscie__slot" data-i="' + i + '">'
+               +   '<div class="wejscie__tlo" style="background-image:url(' + baza + k + ')"></div>'
+               +   '<img class="wejscie__kadr" src="' + baza + k + '" alt="">'
+               + '</div>';
         }).join('') + '</div>';
       }
 
@@ -83,8 +89,8 @@
       KADRY.forEach(function (_, i) {
         setTimeout(function () {
           if (zdjete) return;
-          kadr.querySelectorAll('.wejscie__kadr').forEach(function (img) {
-            img.classList.toggle('jest', +img.dataset.i === i);
+          kadr.querySelectorAll('.wejscie__slot').forEach(function (slot) {
+            slot.classList.toggle('jest', +slot.dataset.i === i);
           });
         }, i * KLATKA);
       });
@@ -92,7 +98,7 @@
       // ostatni kadr gaśnie, wchodzi podpis
       setTimeout(function () {
         if (zdjete) return;
-        kadr.querySelectorAll('.wejscie__kadr').forEach(function (img) { img.classList.remove('jest'); });
+        kadr.querySelectorAll('.wejscie__slot').forEach(function (s) { s.classList.remove('jest'); });
         html.classList.add('wejscie-f1');
       }, PODPIS);
 

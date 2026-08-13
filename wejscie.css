@@ -35,13 +35,23 @@
 }
 .wejscie__plyta--gora .wejscie__kadry{top:0}
 .wejscie__plyta--dol .wejscie__kadry{bottom:0}
-.wejscie__kadr{
-  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-  opacity:0; transform:scale(1.08); filter:saturate(.85) brightness(.55);
+/* JEDEN kadr = ostry obraz w całości (contain) + rozmyte tło z tego samego pliku.
+   Dzięki temu nic się nie rozciąga: kadr 900×1600 na ekranie o wysokości ~800 px
+   idzie w DÓŁ, a nie w górę — obraz jest ostry nawet na Retinie. */
+.wejscie__slot{
+  position:absolute; inset:0; opacity:0; transform:scale(1.06);
 }
-.wejscie-gra .wejscie__kadr.jest{
-  opacity:1; transform:scale(1.02);
-  transition:opacity 90ms linear, transform 420ms cubic-bezier(.16,.84,.44,1);
+.wejscie-gra .wejscie__slot.jest{
+  opacity:1; transform:scale(1.01);
+  transition:opacity 110ms linear, transform 460ms cubic-bezier(.16,.84,.44,1);
+}
+.wejscie__tlo{
+  position:absolute; inset:-6%; background-size:cover; background-position:center;
+  filter:blur(34px) saturate(1.1) brightness(.32); transform:scale(1.08);
+}
+.wejscie__kadr{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:contain;
+  filter:saturate(1) brightness(.9);
 }
 
 /* delikatny prześwit między płytami — linia cięcia */

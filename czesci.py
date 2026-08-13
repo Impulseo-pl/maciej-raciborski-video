@@ -6,7 +6,7 @@ nie rozjechały się przy pierwszej poprawce. Uruchom: python3 czesci.py
 """
 import pathlib, re
 
-WERSJA = "11"
+WERSJA = "13"
 
 
 def sklej(html):
