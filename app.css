@@ -42,9 +42,10 @@ p{margin:0 0 1em}
 .nav--przyklejona{background:rgba(11,11,12,.96); padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--linia)}
 .nav__logo img{width:150px;height:auto}
 .nav__links{display:flex; align-items:center; gap:clamp(14px,2.4vw,34px); font-size:.94rem}
-.nav__links a{text-decoration:none; opacity:.85; transition:opacity .2s}
+.nav__links a{text-decoration:none; opacity:.85; transition:opacity .25s ease}
 .nav__links a:hover{opacity:1}
-.nav__cta{border:1px solid rgba(242,240,238,.45); padding:9px 20px; border-radius:999px; opacity:1!important}
+.nav__cta{border:1px solid rgba(242,240,238,.45); padding:9px 20px; border-radius:999px; opacity:1!important;
+  transition:background-color .25s ease, color .25s ease, border-color .25s ease}
 .nav__cta:hover{background:var(--tekst); color:var(--tlo); border-color:var(--tekst)}
 
 /* ---------- HERO ---------- */
@@ -89,7 +90,8 @@ p{margin:0 0 1em}
 
 .btn{
   display:inline-block; text-decoration:none; font-size:.95rem; font-weight:500;
-  padding:14px 30px; border-radius:999px; transition:all .25s ease; border:1px solid transparent; cursor:pointer;
+  padding:14px 30px; border-radius:999px; border:1px solid transparent; cursor:pointer;
+  transition:background-color .25s ease, color .25s ease, border-color .25s ease;
 }
 .btn--pelny{background:var(--tekst); color:var(--tlo)}
 .btn--pelny:hover{background:var(--akcent); color:#fff}
@@ -218,7 +220,7 @@ section[id]{scroll-margin-top:86px}
 .stopka__logo{width:170px;height:auto}
 .stopka__opis{color:var(--tekst-cichy); font-size:.92rem; margin:12px 0 0}
 .stopka__kontakt{display:grid; gap:8px; font-size:.94rem; text-align:right}
-.stopka__kontakt a{text-decoration:none; color:var(--tekst-cichy); transition:color .2s}
+.stopka__kontakt a{text-decoration:none; color:var(--tekst-cichy); transition:color .25s ease}
 .stopka__kontakt a:hover{color:var(--tekst)}
 .stopka__social{display:flex; gap:16px; justify-content:flex-end; margin-top:6px}
 .stopka__podpis{
@@ -293,6 +295,7 @@ section[id]{scroll-margin-top:86px}
   .pasek-mob a{
     background:var(--tlo); text-align:center; padding:15px 8px; text-decoration:none;
     font-size:.95rem; font-weight:500;
+    transition:background-color .25s ease, color .25s ease, border-color .25s ease;
   }
   .pasek-mob--akcent{background:var(--akcent); color:#fff}
   body{padding-bottom:56px}
@@ -332,13 +335,16 @@ section[id]{scroll-margin-top:86px}
   display:flex; flex-direction:column; gap:clamp(26px,4vw,44px);
 }
 .proces__lista::before{
-  content:""; position:absolute; left:5px; top:8px; bottom:8px; width:1px; background:var(--linia);
+  content:""; position:absolute; left:5px; top:14px; bottom:14px; width:1px;
+  background:linear-gradient(to bottom,var(--linia) 0%,var(--linia) 92%,transparent 100%);
 }
 .proces__lista > li{position:relative; padding-bottom:4px}
 .proces__lista > li::before{
-  content:""; position:absolute; left:-34px; top:9px; width:11px; height:11px; border-radius:50%;
-  background:var(--tlo); border:1.5px solid var(--linia); transition:border-color .4s ease, background .4s ease;
+  content:""; position:absolute; left:-34px; top:7px; width:11px; height:11px; border-radius:50%;
+  background:var(--tlo); border:1.5px solid var(--linia);
+  transition:border-color .4s ease, background .4s ease, box-shadow .4s ease;
 }
+.os-on .proces__lista > li.os-teraz::before{box-shadow:0 0 0 4px rgba(232,131,111,.14)}
 .proces__lista > li h3{margin:0 0 8px}
 .proces__lista > li p{color:var(--tekst-cichy); font-size:.97rem; margin:0; max-width:min(100%,560px)}
 .proces__nr{
@@ -354,20 +360,12 @@ section[id]{scroll-margin-top:86px}
 .os-on .proces__lista > li.os-bylo::before{border-color:#e8836f}
 .os-on .proces__lista > li.os-teraz .proces__nr{color:#e8836f}
 
-/* DROGA PRZEWIJANIA NA KROK (uwaga K. 13.08: „to może być dłuższe, a nie takie szybkie").
-   Ta sama lekcja co w silniku dem 09.08: NIE spowalniamy animacji - podświetlenie musi
-   trzymać się palca, inaczej strona sprawia wrażenie zacinającej się. Zamiast tego każdy
-   krok dostaje własny kawałek ekranu do przewinięcia, więc oś czyta się krok po kroku.
-   Tylko duży ekran - na telefonie sticky-kolumny i tak nie ma, a rozciąganie zamieniłoby
-   sekcję w tunel. */
+/* ODSTĘPY NA OSI (poprawka po uwadze K. 13.08: „wygląda chujowo, uprość").
+   Pierwsza próba dała krokom po 38vh wysokości - przewijanie faktycznie zwolniło, ale
+   między krokami zrobiły się puste dziury i sekcja wyglądała na niedokończoną. Wniosek:
+   drogę przewijania wydłużamy ODSTĘPEM, nie rozciąganiem kroków. Treść zostaje zwarta. */
 @media (min-width:901px){
-  .proces__lista{gap:0}
-  .proces__lista > li{
-    min-height:38vh; display:flex; flex-direction:column; justify-content:center;
-    padding-block:2vh;
-  }
-  .proces__lista > li::before{top:calc(50% - 5px)}   /* kropka na wysokości treści kroku */
-  .proces__in{padding-bottom:clamp(90px,12vw,160px)}
+  .proces__lista{gap:clamp(38px,4.4vw,62px)}
 }
 
 @media (max-width:900px){
@@ -482,7 +480,7 @@ section[id]{scroll-margin-top:86px}
 .btn--maly{padding:10px 20px; font-size:.88rem}
 .stopka__marka{max-width:320px}
 .stopka__menu{display:grid; gap:9px; font-size:.94rem}
-.stopka__menu a{text-decoration:none; color:var(--tekst-cichy); transition:color .2s}
+.stopka__menu a{text-decoration:none; color:var(--tekst-cichy); transition:color .25s ease}
 .stopka__menu a:hover{color:var(--tekst)}
 .nav__burger{display:none}
 [aria-current="page"]{opacity:1; color:#e8836f}
