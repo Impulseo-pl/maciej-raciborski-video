@@ -109,50 +109,98 @@
 })();
 
 /* ============================================================
-   OŚ PROCESU — licznik, pasek postępu, zapalanie kroków.
-   Osobny blok w try: błąd tutaj nie kładzie reszty strony.
+   OŚ PROCESU — sekcja przyklejona na czas przejścia przez kroki.
+   Strona zatrzymuje się na sekcji, przeprowadza przez cały proces i puszcza dalej.
+   Lewa kolumna (numer, nazwa, pasek) przechodzi razem z krokami, nie przeskakuje.
+
+   BEZPIECZNIK: klasę .pin-on nadaje wyłącznie ten skrypt. Bez niego albo przy błędzie
+   sekcja jest zwykłą listą - wszystko widoczne. Na telefonie przyklejania nie ma.
    ============================================================ */
 (function () {
   'use strict';
   try {
     if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-    var sek = document.querySelector('.proces');
-    if (!sek) return;
-    var kroki = [].slice.call(sek.querySelectorAll('.proces__lista > li'));
-    if (kroki.length < 2) return;
+    var sekcje = [].slice.call(document.querySelectorAll('.proces'));
+    if (!sekcje.length) return;
 
-    var teraz = sek.querySelector('.proces__teraz');
-    var pasek = sek.querySelector('.proces__pasek > i');
-    var nazwa = sek.querySelector('.proces__krok');
+    var duzyEkran = function () { return innerWidth >= 901; };
+    if (duzyEkran()) document.documentElement.classList.add('pin-on');
     document.documentElement.classList.add('os-on');
 
-    var aktualny = -1;
-    function odswiez() {
-      var srodek = innerHeight * 0.55, wybrany = 0;
-      kroki.forEach(function (li, i) {
-        if (li.getBoundingClientRect().top <= srodek) wybrany = i;
-      });
-      if (wybrany === aktualny) return;
-      aktualny = wybrany;
-      kroki.forEach(function (li, i) {
-        li.classList.toggle('os-teraz', i === wybrany);
-        li.classList.toggle('os-bylo', i < wybrany);
-      });
-      var nr = String(wybrany + 1).padStart(2, '0');
-      if (teraz) teraz.textContent = nr;
-      if (pasek) pasek.style.width = ((wybrany + 1) / kroki.length * 100) + '%';
-      var h3 = kroki[wybrany].querySelector('h3');
-      if (nazwa && h3) nazwa.textContent = h3.textContent;
-    }
+    sekcje.forEach(function (sek) {
+      var kroki = [].slice.call(sek.querySelectorAll('.proces__lista > li'));
+      if (kroki.length < 2) return;
+      var lista = sek.querySelector('.proces__lista');
+      var teraz = sek.querySelector('.proces__teraz');
+      var pasek = sek.querySelector('.proces__pasek > i');
+      var nazwa = sek.querySelector('.proces__krok');
+      var bok = sek.querySelector('.proces__bok');
+      sek.style.setProperty('--kroki', kroki.length);
 
-    var czeka = false;
-    addEventListener('scroll', function () {
-      if (czeka) return;
-      czeka = true;
-      requestAnimationFrame(function () { odswiez(); czeka = false; });
-    }, { passive: true });
-    odswiez();
-  } catch (e) { /* jeden efekt mniej, strona działa */ }
+      var aktualny = -1;
+
+      function ustawKrok(i, postep) {
+        if (i !== aktualny) {
+          aktualny = i;
+          kroki.forEach(function (li, n) {
+            li.classList.toggle('os-teraz', n === i);
+            li.classList.toggle('os-bylo', n < i);
+          });
+          // lewa kolumna: krótkie wyjście i wejście zamiast skoku
+          if (bok) {
+            bok.classList.add('zmiana');
+            setTimeout(function () {
+              if (teraz) teraz.textContent = String(i + 1).padStart(2, '0');
+              var h3 = kroki[i].querySelector('h3');
+              if (nazwa && h3) nazwa.textContent = h3.textContent;
+              bok.classList.remove('zmiana');
+            }, 190);
+          }
+          // przy przyklejeniu lista jedzie tak, żeby aktywny krok stał w tym samym miejscu
+          if (document.documentElement.classList.contains('pin-on') && duzyEkran()) {
+            var cel = kroki[i];
+            var przesun = cel.offsetTop - (lista.offsetHeight - cel.offsetHeight) / 2;
+            lista.style.transform = 'translateY(' + (-przesun) + 'px)';
+          } else {
+            lista.style.transform = '';
+          }
+        }
+        if (pasek) pasek.style.width = Math.max(4, Math.min(100, postep * 100)) + '%';
+      }
+
+      function odswiez() {
+        var r = sek.getBoundingClientRect();
+        var droga = sek.offsetHeight - innerHeight;      // ile realnie się przewija
+        var postep;
+        if (droga > 20 && document.documentElement.classList.contains('pin-on') && duzyEkran()) {
+          postep = Math.max(0, Math.min(1, -r.top / droga));
+        } else {
+          // bez przyklejania: krok wyznacza pozycja treści na ekranie
+          var srodek = innerHeight * 0.55, wybrany = 0;
+          kroki.forEach(function (li, n) { if (li.getBoundingClientRect().top <= srodek) wybrany = n; });
+          ustawKrok(wybrany, (wybrany + 1) / kroki.length);
+          return;
+        }
+        var i = Math.min(kroki.length - 1, Math.floor(postep * kroki.length + 0.0001));
+        ustawKrok(i, (postep * (kroki.length - 1) + 1) / kroki.length);
+      }
+
+      var czeka = false;
+      addEventListener('scroll', function () {
+        if (czeka) return;
+        czeka = true;
+        requestAnimationFrame(function () { odswiez(); czeka = false; });
+      }, { passive: true });
+      addEventListener('resize', function () {
+        document.documentElement.classList.toggle('pin-on', duzyEkran());
+        aktualny = -1;
+        odswiez();
+      }, { passive: true });
+      odswiez();
+    });
+  } catch (e) {
+    try { document.documentElement.classList.remove('pin-on'); } catch (e2) {}
+  }
 })();
 
 /* ---- menu na telefonie ---- */

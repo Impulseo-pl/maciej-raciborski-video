@@ -42,7 +42,7 @@ p{margin:0 0 1em}
 .nav--przyklejona{background:rgba(11,11,12,.96); padding-top:12px; padding-bottom:12px; border-bottom:1px solid var(--linia)}
 .nav__logo img{width:150px;height:auto}
 .nav__links{display:flex; align-items:center; gap:clamp(14px,2.4vw,34px); font-size:.94rem}
-.nav__links a{text-decoration:none; opacity:.85; transition:opacity .25s ease}
+.nav__links a{text-decoration:none; opacity:.85; transition:background-color .25s ease, color .25s ease, border-color .25s ease, opacity .25s ease}
 .nav__links a:hover{opacity:1}
 .nav__cta{border:1px solid rgba(242,240,238,.45); padding:9px 20px; border-radius:999px; opacity:1!important;
   transition:background-color .25s ease, color .25s ease, border-color .25s ease}
@@ -220,7 +220,7 @@ section[id]{scroll-margin-top:86px}
 .stopka__logo{width:170px;height:auto}
 .stopka__opis{color:var(--tekst-cichy); font-size:.92rem; margin:12px 0 0}
 .stopka__kontakt{display:grid; gap:8px; font-size:.94rem; text-align:right}
-.stopka__kontakt a{text-decoration:none; color:var(--tekst-cichy); transition:color .25s ease}
+.stopka__kontakt a{text-decoration:none; color:var(--tekst-cichy); transition:background-color .25s ease, color .25s ease, border-color .25s ease}
 .stopka__kontakt a:hover{color:var(--tekst)}
 .stopka__social{display:flex; gap:16px; justify-content:flex-end; margin-top:6px}
 .stopka__podpis{
@@ -360,12 +360,54 @@ section[id]{scroll-margin-top:86px}
 .os-on .proces__lista > li.os-bylo::before{border-color:#e8836f}
 .os-on .proces__lista > li.os-teraz .proces__nr{color:#e8836f}
 
-/* ODSTĘPY NA OSI (poprawka po uwadze K. 13.08: „wygląda chujowo, uprość").
-   Pierwsza próba dała krokom po 38vh wysokości - przewijanie faktycznie zwolniło, ale
-   między krokami zrobiły się puste dziury i sekcja wyglądała na niedokończoną. Wniosek:
-   drogę przewijania wydłużamy ODSTĘPEM, nie rozciąganiem kroków. Treść zostaje zwarta. */
+/* ═══════════════════════════════════════════════════════════════════════════
+   SEKCJA PRZYKLEJANA (uwaga K. 13.08: „żeby płynnie szło aż do zakończenia całego
+   procesu, a lewa część nie była statyczna").
+
+   Sekcja jest wyższa od ekranu, a jej wnętrze przykleja się na czas przewijania:
+   strona zatrzymuje się, przeprowadza przez wszystkie kroki i dopiero puszcza dalej.
+   Droga liczona jest z liczby kroków (--kroki), więc /wspolpraca/ z pięcioma krokami
+   dostaje proporcjonalnie więcej miejsca, ale nie jest to tunel jak w silniku dem.
+
+   BEZPIECZNIK: przyklejanie i przygaszanie włącza WYŁĄCZNIE skrypt (klasa .pin-on
+   na <html>). Bez JS sekcja jest zwykłą listą - wszystko widoczne, nic nie znika.
+   ═══════════════════════════════════════════════════════════════════════════ */
 @media (min-width:901px){
-  .proces__lista{gap:clamp(38px,4.4vw,62px)}
+  .proces__lista{gap:clamp(30px,3.4vw,48px)}
+
+  .pin-on .proces{
+    /* 100vh na sam ekran + po ~52vh drogi na każdy kolejny krok */
+    height:calc(100vh + (var(--kroki,4) - 1) * 52vh);
+  }
+  .pin-on .proces__pin{
+    position:sticky; top:0; height:100vh; display:flex; align-items:center;
+    overflow:hidden;
+  }
+  .pin-on .proces__in{padding-block:0; width:min(92%,var(--max)); align-items:center}
+  .pin-on .proces__bok{position:static}
+
+  /* kroki jadą pionowo tak, żeby aktywny stał w tym samym miejscu ekranu */
+  .pin-on .proces__lista{
+    transition:transform .62s cubic-bezier(.22,.61,.36,1);
+    will-change:transform;
+  }
+  .pin-on .proces__lista > li{
+    transition:opacity .45s ease, filter .45s ease;
+    opacity:.22; filter:blur(.4px);
+  }
+  .pin-on .proces__lista > li.os-teraz{opacity:1; filter:none}
+  .pin-on .proces__lista > li.os-bylo{opacity:.4; filter:none}
+
+  /* lewa kolumna: numer i nazwa kroku przechodzą, nie przeskakują */
+  .proces__teraz,.proces__krok{display:inline-block}
+  .proces__teraz{
+    transition:transform .42s cubic-bezier(.22,.61,.36,1), opacity .28s ease;
+  }
+  .proces__krok{
+    transition:transform .42s cubic-bezier(.22,.61,.36,1), opacity .28s ease;
+  }
+  .zmiana .proces__teraz,.zmiana .proces__krok{opacity:0; transform:translateY(-12px)}
+  .proces__pasek > i{transition:width .12s linear}   /* pasek płynie z przewijaniem */
 }
 
 @media (max-width:900px){
@@ -471,7 +513,8 @@ section[id]{scroll-margin-top:86px}
 /* drobne */
 .link-strzalka{
   display:inline-flex; align-items:center; gap:9px; text-decoration:none; color:var(--tekst);
-  border-bottom:1px solid var(--linia); padding-bottom:4px; transition:border-color .25s, gap .25s;
+  border-bottom:1px solid var(--linia); padding-bottom:4px;
+  transition:background-color .25s ease, color .25s ease, border-color .25s ease;
 }
 .link-strzalka::after{content:"→"; color:#e8836f; transition:transform .25s}
 .link-strzalka:hover{border-color:#e8836f}
@@ -480,7 +523,7 @@ section[id]{scroll-margin-top:86px}
 .btn--maly{padding:10px 20px; font-size:.88rem}
 .stopka__marka{max-width:320px}
 .stopka__menu{display:grid; gap:9px; font-size:.94rem}
-.stopka__menu a{text-decoration:none; color:var(--tekst-cichy); transition:color .25s ease}
+.stopka__menu a{text-decoration:none; color:var(--tekst-cichy); transition:background-color .25s ease, color .25s ease, border-color .25s ease}
 .stopka__menu a:hover{color:var(--tekst)}
 .nav__burger{display:none}
 [aria-current="page"]{opacity:1; color:#e8836f}
@@ -540,8 +583,10 @@ section[id]{scroll-margin-top:86px}
   .stopka__in{gap:26px}
   .stopka__marka{max-width:none}
 }
-/* nic nie ma prawa wystawać poza ekran */
-html,body{overflow-x:hidden; max-width:100%}
+/* Nic nie ma prawa wystawać poza ekran. ⚠️ `overflow-x:hidden` tworzy kontekst
+   przewijania i CICHO ZABIJA position:sticky (zmierzone 13.08: sekcja procesu
+   przestała się przyklejać). `clip` obcina tak samo, ale sticky zostaje żywy. */
+html,body{overflow-x:clip; max-width:100%}
 img,video,iframe{height:auto}
 
 /* pas kadrów pod nagłówkiem podstrony (reguła: zaraz po hero obraz, nie ściana tekstu) */

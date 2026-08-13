@@ -177,6 +177,7 @@ def strona_glowna():
 
   <!-- OŚ PROCESU -->
   <section class="proces proces-os os-mech" id="zakres">
+   <div class="proces__pin">
     <div class="proces__in">
       <div class="proces__bok">
         <p class="proces__nad">Jak to działa</p>
@@ -212,6 +213,7 @@ def strona_glowna():
         </li>
       </ol>
     </div>
+   </div>
   </section>
 
   <!-- CTA -->
@@ -398,6 +400,7 @@ def strona_wspolpraca():
     </div>
   </section>
   <section class="proces proces-os os-mech">
+   <div class="proces__pin">
     <div class="proces__in">
       <div class="proces__bok">
         <p class="proces__nad">Przebieg</p>
@@ -438,6 +441,7 @@ def strona_wspolpraca():
         </li>
       </ol>
     </div>
+   </div>
   </section>
 
   <section class="dwie">
