@@ -1,7 +1,8 @@
 /* ============================================================
-   EKRAN WEJŚCIA — „kadr filmowy”
-   Dwie płyty (góra/dół) rozsuwają się jak pasy w filmie kinowym,
-   odsłaniając stronę. Opowiada produkt klienta: wideo.
+   EKRAN WEJŚCIA — „montaż"
+   Przez pierwsze pół sekundy przelatują kadry z jego realizacji (jak przewijanie
+   materiału na osi montażowej), zatrzymują się na podpisie, po czym kadr rozsuwa
+   się jak cięcie na stronę. Opowiada dokładnie to, czym klient się zajmuje.
 
    BEZPIECZNIKI (wszystkie obowiązkowe):
    1) zasłona domyślnie display:none — włącza ją WYŁĄCZNIE skrypt,
@@ -15,39 +16,66 @@
 
 .wejscie-gra .wejscie{
   display:block; position:fixed; inset:0; z-index:300; pointer-events:none;
+  --pas:50.5%;
 }
 
-/* płyty — zasłaniają tylko one, tło jest przezroczyste */
+/* ── płyty: to one zasłaniają, tło jest przezroczyste ── */
 .wejscie__plyta{
-  position:absolute; left:0; right:0; height:50.5%; background:var(--tlo,#0b0b0c);
-  transition:transform 620ms cubic-bezier(.76,0,.24,1);
+  position:absolute; left:0; right:0; height:var(--pas); background:var(--tlo,#0b0b0c);
+  overflow:hidden;
+  transition:transform 700ms cubic-bezier(.72,0,.16,1);
 }
 .wejscie__plyta--gora{top:0}
 .wejscie__plyta--dol{bottom:0}
 
-/* logo w środku kadru */
+/* ── przelatujące kadry (wspólne tło obu płyt: górna pokazuje górę kadru,
+      dolna dół — dzięki temu obraz jest ciągły przez całą wysokość ekranu) ── */
+.wejscie__kadry{
+  position:absolute; left:0; width:100%; height:100vh;
+}
+.wejscie__plyta--gora .wejscie__kadry{top:0}
+.wejscie__plyta--dol .wejscie__kadry{bottom:0}
+.wejscie__kadr{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; transform:scale(1.08); filter:saturate(.85) brightness(.55);
+}
+.wejscie-gra .wejscie__kadr.jest{
+  opacity:1; transform:scale(1.02);
+  transition:opacity 90ms linear, transform 420ms cubic-bezier(.16,.84,.44,1);
+}
+
+/* delikatny prześwit między płytami — linia cięcia */
+.wejscie__szpara{
+  position:absolute; left:0; right:0; top:50%; height:1px; transform:translateY(-50%);
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.22),transparent);
+  opacity:0; transition:opacity 260ms ease;
+}
+.wejscie-gra.wejscie-f1 .wejscie__szpara{opacity:1}
+
+/* ── podpis w środku kadru ── */
 .wejscie__logo{
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:min(64vw,330px); opacity:0;
-  transition:opacity 300ms ease;
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,calc(-50% - 6px)) scale(.96);
+  width:min(66vw,340px); opacity:0;
+  transition:opacity 340ms ease, transform 520ms cubic-bezier(.16,.84,.44,1);
 }
 .wejscie__kreska{
-  position:absolute; top:50%; left:50%; transform:translate(-50%,calc(-50% + 42px));
+  position:absolute; top:50%; left:50%; transform:translate(-50%,calc(-50% + 44px));
   width:0; height:1.5px; background:var(--akcent,#c8452f);
-  transition:width 420ms cubic-bezier(.16,.84,.44,1);
+  transition:width 460ms cubic-bezier(.16,.84,.44,1);
 }
 
-/* faza 1: logo się pokazuje, kreska rozjeżdża */
-.wejscie-gra.wejscie-f1 .wejscie__logo{opacity:1}
-.wejscie-gra.wejscie-f1 .wejscie__kreska{width:min(46vw,190px)}
+/* faza 1: podpis wchodzi, kreska się rozjeżdża */
+.wejscie-gra.wejscie-f1 .wejscie__logo{opacity:1; transform:translate(-50%,-50%) scale(1)}
+.wejscie-gra.wejscie-f1 .wejscie__kreska{width:min(48vw,200px)}
 
-/* faza 2: kadr się rozsuwa, logo znika */
-.wejscie-gra.wejscie-f2 .wejscie__logo,
-.wejscie-gra.wejscie-f2 .wejscie__kreska{opacity:0; transition-duration:220ms}
+/* faza 2: cięcie — kadr rozjeżdża się i odsłania stronę */
+.wejscie-gra.wejscie-f2 .wejscie__logo{opacity:0; transform:translate(-50%,-50%) scale(1.04); transition-duration:200ms}
+.wejscie-gra.wejscie-f2 .wejscie__kreska,
+.wejscie-gra.wejscie-f2 .wejscie__szpara{opacity:0; transition-duration:200ms}
 .wejscie-gra.wejscie-f2 .wejscie__plyta--gora{transform:translateY(-100%)}
 .wejscie-gra.wejscie-f2 .wejscie__plyta--dol{transform:translateY(100%)}
 
-/* treść pod spodem czeka spokojnie, bez mrugania */
 .wejscie-gra body{overflow:hidden}
 
 @media (prefers-reduced-motion:reduce){

@@ -1,6 +1,7 @@
 /* Maciej Raciborski — demo Impulseo */
 (function () {
   'use strict';
+  try {
 
   /* --- nawigacja: przyklejenie po zjechaniu z hero --- */
   var nav = document.querySelector('.nav');
@@ -50,8 +51,10 @@
   var lbT = document.getElementById('lightbox-tytul');
   var lbX = document.getElementById('lightbox-zamknij');
   var wracaDo = null;
+  var maLightbox = !!(lb && lbV && lbX);          // podstrona bez odtwarzacza to nie błąd
 
   function otworz(src, tytul, zrodlo, plakat) {
+    if (!maLightbox) return;
     wracaDo = zrodlo || null;
     if (plakat) lbV.poster = plakat;
     lbV.preload = 'auto';
@@ -76,13 +79,16 @@
       otworz(kafel.dataset.full, kafel.dataset.tytul, kafel, v ? v.getAttribute('poster') : null);
     });
   });
-  lbX.addEventListener('click', zamknij);
-  lb.addEventListener('click', function (e) { if (e.target === lb) zamknij(); });
-  addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) zamknij(); });
+  if (maLightbox) {
+    lbX.addEventListener('click', zamknij);
+    lb.addEventListener('click', function (e) { if (e.target === lb) zamknij(); });
+    addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) zamknij(); });
+  }
 
   /* --- formularz (demo: bez wysyłki na serwer) --- */
   var form = document.getElementById('formularz');
   var info = document.getElementById('formularz-info');
+  if (!form || !info) return;                     // formularz jest tylko na /kontakt/
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var imie = form.imie.value.trim();
@@ -98,6 +104,8 @@
     info.classList.add('formularz__info--ok');
     form.reset();
   });
+
+  } catch (e) { /* jeden efekt mniej, strona działa dalej */ }
 })();
 
 /* ============================================================

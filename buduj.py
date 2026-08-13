@@ -327,7 +327,7 @@ def strona_o_mnie():
         <p>Prowadzę kilka marek naraz, nie kilkanaście. To ograniczenie, które daje uwagę - i jedyny sposób, żeby jakość nie spadła po trzecim miesiącu.</p>
       </article>
       <article class="zasada">
-        <h3>Bierę decyzje na siebie</h3>
+        <h3>Biorę decyzje na siebie</h3>
         <p>Nie przychodzę z pytaniem „co publikujemy w tym tygodniu". Przychodzę z kierunkiem, a Ty go akceptujesz albo korygujesz.</p>
       </article>
       <article class="zasada">
@@ -374,7 +374,7 @@ def strona_wspolpraca():
     <div class="podtytul__in">
       <p class="podtytul__nad">Współpraca</p>
       <h1>Jak to wygląda w praktyce</h1>
-      <p class="podtytul__opis">Bez tajemnic co do zakresu. Poniżej to, co bierę na siebie, jak wygląda miesiąc pracy i z kim to działa, a z kim nie.</p>
+      <p class="podtytul__opis">Bez tajemnic co do zakresu. Poniżej to, co biorę na siebie, jak wygląda miesiąc pracy i z kim to działa, a z kim nie.</p>
     </div>
   </section>
 
