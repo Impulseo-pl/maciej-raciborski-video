@@ -9,7 +9,7 @@
 <meta property="og:description" content="Kim jestem, jak pracuję i dla kogo. Wideo i social media dla marek, które chcą oddać ten obszar w całości.">
 <meta property="og:image" content="../media/omnie.webp">
 <meta property="og:type" content="website">
-<link rel="stylesheet" href="../app.css?v=10">
+<link rel="stylesheet" href="../app.css?v=11">
 
 <script type="application/ld+json">
 {
@@ -127,6 +127,15 @@
   <a href="../kontakt/" class="pasek-mob--akcent">Umów rozmowę</a>
 </div>
 
-<script src="../app.js?v=10"></script>
+<!-- ODTWARZACZ pełnego filmu (musi być na KAŻDEJ stronie z kaflami) -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox__zamknij" id="lightbox-zamknij" aria-label="Zamknij">&times;</button>
+  <figure class="lightbox__ramka">
+    <video id="lightbox-video" controls playsinline preload="none"></video>
+    <figcaption id="lightbox-tytul"></figcaption>
+  </figure>
+</div>
+
+<script src="../app.js?v=11"></script>
 </body>
 </html>

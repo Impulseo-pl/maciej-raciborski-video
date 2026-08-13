@@ -9,8 +9,8 @@
 <meta property="og:description" content="Produkcja wideo i prowadzenie social mediów dla marek. Realizacje dla eventów, motoryzacji i marek lifestyle'owych.">
 <meta property="og:image" content="media/aftermovie_poster.jpg">
 <meta property="og:type" content="website">
-<link rel="stylesheet" href="app.css?v=10">
-<link rel="stylesheet" href="wejscie.css?v=10">
+<link rel="stylesheet" href="app.css?v=11">
+<link rel="stylesheet" href="wejscie.css?v=11">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -23,7 +23,7 @@
   "serviceType": ["Produkcja wideo", "Prowadzenie social mediów", "Materiały reklamowe"]
 }
 </script>
-<script src="wejscie.js?v=10"></script>
+<script src="wejscie.js?v=11"></script>
 </head>
 <body>
 
@@ -205,6 +205,15 @@
   <a href="kontakt/" class="pasek-mob--akcent">Umów rozmowę</a>
 </div>
 
-<script src="app.js?v=10"></script>
+<!-- ODTWARZACZ pełnego filmu (musi być na KAŻDEJ stronie z kaflami) -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox__zamknij" id="lightbox-zamknij" aria-label="Zamknij">&times;</button>
+  <figure class="lightbox__ramka">
+    <video id="lightbox-video" controls playsinline preload="none"></video>
+    <figcaption id="lightbox-tytul"></figcaption>
+  </figure>
+</div>
+
+<script src="app.js?v=11"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@ nie rozjechały się przy pierwszej poprawce. Uruchom: python3 czesci.py
 """
 import pathlib, re
 
-WERSJA = "10"
+WERSJA = "11"
 
 
 def sklej(html):
@@ -105,6 +105,15 @@ def stopka(sciezka=""):
 <div class="pasek-mob" aria-label="Szybki kontakt">
   <a href="{p}realizacje/">Realizacje</a>
   <a href="{p}kontakt/" class="pasek-mob--akcent">Umów rozmowę</a>
+</div>
+
+<!-- ODTWARZACZ pełnego filmu (musi być na KAŻDEJ stronie z kaflami) -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox__zamknij" id="lightbox-zamknij" aria-label="Zamknij">&times;</button>
+  <figure class="lightbox__ramka">
+    <video id="lightbox-video" controls playsinline preload="none"></video>
+    <figcaption id="lightbox-tytul"></figcaption>
+  </figure>
 </div>
 
 <script src="{p}app.js?v={WERSJA}"></script>
